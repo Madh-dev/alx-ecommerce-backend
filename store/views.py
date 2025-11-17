@@ -1,3 +1,7 @@
 from django.shortcuts import render
 
-# Create your views here.
+# store/views.py
+from django.http import JsonResponse
+
+def home(request):
+    return JsonResponse({"message": "Store API Home"})
