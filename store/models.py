@@ -50,23 +50,24 @@ def product_image_upload_path(instance, filename):
 
 class Product(models.Model):
     title = models.CharField(max_length=255)
-    slug = models.SlugField(max_length=255, unique=True, blank=True)
+    slug = models.SlugField(max_length=255, unique=True, blank=True, db_index=True)
     description = models.TextField(blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=2, db_index=True)
 
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,  # keep products if category deleted
         null=True,
-        related_name="products"
+        related_name="products",
+        db_index=True
     )
     image = models.ImageField(upload_to=product_image_upload_path, null=True, blank=True)
 
     inventory = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)  # soft delete
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True,db_index=True)
+    updated_at = models.DateTimeField(auto_now=True, db_index=True)
 
     class Meta:
         indexes = [
