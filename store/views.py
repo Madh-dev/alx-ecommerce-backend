@@ -3,9 +3,39 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework import generics, permissions
+from django.contrib.auth import get_user_model
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .models import Category, Product
-from .serializers import CategorySerializer, ProductSerializer
+from .serializers import CategorySerializer, ProductSerializer,UserRegisterSerializer,UserProfileSerializer,UserProfileUpdateSerializer, AdminUserSerializer
 
+User = get_user_model()
+
+class AdminUserViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = AdminUserSerializer
+    permission_classes = [permissions.IsAdminUser]  # 🔐 only staff/admins
+
+class UserRegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserRegisterSerializer
+    permission_classes = [permissions.AllowAny]  # anyone can register
+
+class UserProfileView(generics.RetrieveAPIView):
+    serializer_class = UserProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]  # 🔐 must be logged in
+
+    def get_object(self):
+        # Always return the currently authenticated user
+        return self.request.user
+
+class UserProfileUpdateView(generics.UpdateAPIView):
+    serializer_class = UserProfileUpdateSerializer
+    permission_classes = [permissions.IsAuthenticated]  # 🔐 must be logged in
+
+    def get_object(self):
+        # Always return the currently authenticated user
+        return self.request.user
 
 # ======================
 # 🟩 Pagination
@@ -22,6 +52,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     pagination_class = StandardResultsSetPagination
+    permission_classes = [IsAuthenticatedOrReadOnly]  # 🔐 protect
 
     # Filters + Search + Sorting
     filter_backends = [
@@ -48,6 +79,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.filter(is_active=True).select_related("category")
     serializer_class = ProductSerializer
     pagination_class = StandardResultsSetPagination
+    permission_classes = [IsAuthenticatedOrReadOnly]  # 🔐 protect
 
     # Filters + Search + Sorting
     filter_backends = [
