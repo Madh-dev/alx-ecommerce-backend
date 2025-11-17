@@ -1,8 +1,11 @@
-# store/urls.py
-from django.urls import path
-from . import views  # make sure you have views.py
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import ProductViewSet, CategoryViewSet
+
+router = DefaultRouter()
+router.register(r'categories', CategoryViewSet, basename='category')
+router.register(r'products', ProductViewSet, basename='product')
 
 urlpatterns = [
-    # Example endpoint
-    path('', views.home, name='home'),
+    path('', include(router.urls)),
 ]
