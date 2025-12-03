@@ -24,6 +24,7 @@ urlpatterns = [
 ]
 from django.contrib import admin
 from django.urls import path, include
+from config.views import api_root
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -36,13 +37,14 @@ schema_view = get_schema_view(
    openapi.Info(
       title="E-commerce API",
       default_version='v1',
-      description="API documentation for the project",
+      description="API documentation for the ALX BACKEND ECOMMERCE project",
    ),
    public=True,
    permission_classes=(permissions.AllowAny,),
 )
 
 urlpatterns = [
+    path('',api_root, name='api-root'),
     path('admin/', admin.site.urls),
     path('api/', include('store.urls')),
       # JWT auth endpoints

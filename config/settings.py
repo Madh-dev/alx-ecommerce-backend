@@ -21,33 +21,36 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
-# Allowed hosts
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "")
-if ALLOWED_HOSTS:
-    ALLOWED_HOSTS = ALLOWED_HOSTS.split(",")
-else:
-    ALLOWED_HOSTS = ["localhost", "127.0.0.1", ".onrender.com",]
+# ALLOWED HOSTS
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    ".onrender.com",
+]
+
+if os.environ.get("ALLOWED_HOSTS"):
+    ALLOWED_HOSTS += os.environ["ALLOWED_HOSTS"].split(",")
 
 # ---------------------------------------------------
 # APPLICATIONS
 # ---------------------------------------------------
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
 
-    # 3rd party
-    'rest_framework',
-    'rest_framework_simplejwt',
-    'drf_yasg',
-    'django_filters',
+    # 3rd-party
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "django_filters",
+    "drf_yasg",
 
     # Local apps
-    'store',
+    "store",
 ]
 
 # ---------------------------------------------------
@@ -55,14 +58,15 @@ INSTALLED_APPS = [
 # ---------------------------------------------------
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Whitenoise for static files
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # static files
+
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
 # ---------------------------------------------------
@@ -91,18 +95,18 @@ SIMPLE_JWT = {
 }
 
 # ---------------------------------------------------
-# URL + WSGI
+# URLs + WSGI
 # ---------------------------------------------------
 
 ROOT_URLCONF = "config.urls"
 WSGI_APPLICATION = "config.wsgi.application"
 
 # ---------------------------------------------------
-# DATABASE (Dynamic: local vs Render)
+# DATABASE (AUTO-SWITCH: Local ↔ Render)
 # ---------------------------------------------------
 
 if os.environ.get("RENDER"):
-    # Use Render DATABASE_URL if set
+    # Production (Render)
     DATABASES = {
         "default": dj_database_url.config(
             conn_max_age=600,
@@ -126,22 +130,23 @@ else:
 # CUSTOM USER
 # ---------------------------------------------------
 
-AUTH_USER_MODEL = 'store.User'
+AUTH_USER_MODEL = "store.User"
 
 # ---------------------------------------------------
-# STATIC FILES (Dynamic)
+# STATIC FILES (LOCAL & RENDER)
 # ---------------------------------------------------
 
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# Local static dirs
-STATICFILES_DIRS = [BASE_DIR / "static"]
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # ---------------------------------------------------
-# MEDIA FILES
+# MEDIA
 # ---------------------------------------------------
 
 MEDIA_URL = "/media/"
@@ -164,15 +169,15 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "templates"],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [BASE_DIR / "templates"],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
